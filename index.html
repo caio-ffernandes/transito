@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transito</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.1.1/confetti.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js"></script>
+</head>
+<body>
+    <div><img src="" alt=""></div>
+    <section id="momento">No momento está:</section>
+    <div class="pokedex" id="infopok">
+
+    </div>
+   
+    <img class="pokedexe" onclick="informacao()" src="images/closed-pokedex.svg" alt="">
+</body>
+<script>
+    let momento=document.getElementById("momento")
+    let pokemon=document.getElementById("infopok")
+    let flareon="https://pokeapi.co/api/v2/pokemon/flareon"
+    let leafeon="https://pokeapi.co/api/v2/pokemon/leafeon"
+    let jolteon="https://pokeapi.co/api/v2/pokemon/jolteon"
+    let numero=0
+    let estadoAnterior=null
+    function informacao() {
+        if(numero<1){
+           numero++  
+        }
+       else{
+        numero--
+       }
+        fetch("https://niloweb.com.br/transit-room/api/reg_endpoint.php")
+        .then(resposta => resposta.json())
+        .then(dados1 => {
+            if (dados1[0].res === "B") {
+                buscarPokemon(flareon, "Bloqueado");
+            } else if (dados1[0].res === "L") {
+                buscarPokemon(leafeon, "Livre");
+            } else {
+                buscarPokemon(jolteon, "Aguardando");
+            }
+           
+        });
+    }
+
+    function buscarPokemon(url, status) {
+        fetch(url)
+        .then(resposta => resposta.json())
+        .then(dados => {
+            momento.innerHTML = `No momento está ${status}`;
+            if(numero==1){
+            pokemon.innerHTML = `
+                <img class="eevee" src="${dados.sprites.front_default}" alt="${dados.name}">
+                <p>Nome: ${dados.name}</p>
+                <p>Altura: ${dados.height}</p>
+                <p>Peso: ${dados.weight}</p>
+                <p>Tipo: ${dados.types[0].type.name}</p>
+            `}
+            else{
+                pokemon.innerHTML = `
+                <img class="eevee" src="${dados.sprites.front_default}" alt="${dados.name}">`
+            };
+        })
+        .catch(error => console.error('Erro ao buscar Pokémon:', error));
+    }
+
+    fetch("https://niloweb.com.br/transit-room/api/reg_endpoint.php")
+    .then(resposta=>resposta.json()
+    .then(dados1=>{
+        if(dados1[0].res=="B"){
+            fetch(flareon)
+        .then(resposta=>resposta.json())
+        .then(dados=>{
+            console.log(dados)
+            momento.innerHTML=`No momento esta bloqueado`
+            pokemon.innerHTML=`
+            <img class="eevee" src="${dados.sprites.front_default}" alt="${dados.name}">
+            
+            `
+            document.body.classList.add('background-flareon');
+        })
+        }
+       else if(dados1[0].res=="L"){
+        fetch(leafeon)
+        .then(resposta=>resposta.json())
+        .then(dados=>{
+            console.log(dados)
+            momento.innerHTML=`No momento esta livre`
+            pokemon.innerHTML=`
+            <img class="eevee" src="${dados.sprites.front_default}" alt="${dados.name}">
+            `
+            document.body.classList.add('background-leafeon');
+        })
+       }
+       else{
+        fetch(jolteon)
+        .then(resposta=>resposta.json())
+        .then(dados=>{
+            console.log(dados)
+            momento.innerHTML=`No momento esta aguardando`
+            pokemon.innerHTML=`
+            <img class="eevee" src="${dados.sprites.front_default}" alt="${dados.name}">
+            `
+            document.body.classList.add('background-jolteon');  
+        })
+       }
+       
+    })
+
+
+    )
+
+    function checarapi() {
+       
+
+    fetch("https://niloweb.com.br/transit-room/api/reg_endpoint.php")
+    .then(resposta => resposta.json())
+    .then(dados1 => {
+      
+        if (dados1[0].res !== estadoAnterior) {
+            
+            estadoAnterior = dados1[0].res;
+            
+
+            document.body.classList.remove('background-flareon', 'background-leafeon', 'background-jolteon');
+            
+          
+            if (dados1[0].res == "B") {
+                fetch(flareon)
+                .then(resposta => resposta.json())
+                .then(dados => {
+                    momento.innerHTML = `No momento está bloqueado`;
+                    pokemon.innerHTML = `<img class="eevee" src="${dados.sprites.front_default}" alt="${dados.name}">`;
+                    document.body.classList.add('background-flareon');
+                    playSound();
+                                        
+function shootConfetti() {
+            const defaults = {
+                spread: 360,
+                ticks: 100,
+                gravity: 0,
+                decay: 0.94,
+                startVelocity: 30,
+            };
+
+            function shoot() {
+               
+
+                confetti({
+                    ...defaults,
+                    particleCount: 20,
+                    scalar: 2,
+                    shapes: ["emoji"],
+                    shapeOptions: {
+                        emoji: {
+                            value: [" 🔥 "],
+                        },
+                    },
+                });
+            }
+        
+            setTimeout(shoot, 0);
+            setTimeout(shoot, 100);
+            setTimeout(shoot, 200);
+}
+                    shootConfetti();
+                })
+            } else if (dados1[0].res == "L") {
+                fetch(leafeon)
+                .then(resposta => resposta.json())
+                .then(dados => {
+                    momento.innerHTML = `No momento está livre`;
+                    pokemon.innerHTML = `<img class="eevee" src="${dados.sprites.front_default}" alt="${dados.name}">`;
+                    document.body.classList.add('background-leafeon');
+                    playSound();
+                                                     
+function shootConfetti() {
+            const defaults = {
+                spread: 360,
+                ticks: 100,
+                gravity: 0,
+                decay: 0.94,
+                startVelocity: 30,
+            };
+
+            function shoot() {
+               
+
+                confetti({
+                    ...defaults,
+                    particleCount: 20,
+                    scalar: 2,
+                    shapes: ["emoji"],
+                    shapeOptions: {
+                        emoji: {
+                            value: [" 🍃 "],
+                        },
+                    },
+                });
+            }
+        
+            setTimeout(shoot, 0);
+            setTimeout(shoot, 100);
+            setTimeout(shoot, 200);
+}
+                    shootConfetti();
+                })
+            } else {
+                fetch(jolteon)
+                .then(resposta => resposta.json())
+                .then(dados => {
+                    momento.innerHTML = `No momento está aguardando`;
+                    pokemon.innerHTML = `<img class="eevee" src="${dados.sprites.front_default}" alt="${dados.name}">`;
+                    document.body.classList.add('background-jolteon');
+                    playSound();
+                    
+function shootConfetti() {
+            const defaults = {
+                spread: 360,
+                ticks: 100,
+                gravity: 0,
+                decay: 0.94,
+                startVelocity: 30,
+            };
+
+            function shoot() {
+               
+
+                confetti({
+                    ...defaults,
+                    particleCount: 20,
+                    scalar: 2,
+                    shapes: ["emoji"],
+                    shapeOptions: {
+                        emoji: {
+                            value: ["⚡"],
+                        },
+                    },
+                });
+            }
+        
+            setTimeout(shoot, 0);
+            setTimeout(shoot, 100);
+            setTimeout(shoot, 200);
+}
+                    shootConfetti();
+                })
+            }
+        }
+    })
+    .catch(error => console.error('Erro ao verificar API:', error));
+}
+
+
+function playSound() {
+    const audio = new Audio ('audio/12_3.mp3')
+                audio.onended = function() {
+            };
+            audio.play();
+        }
+ 
+        document.body.addEventListener('onLoad', function() {
+            playSound();
+        });
+    checarapi
+    setInterval(checarapi, 1000);
+</script>
+</html>
