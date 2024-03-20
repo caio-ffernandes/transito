@@ -24,6 +24,7 @@
     let leafeon="https://pokeapi.co/api/v2/pokemon/leafeon"
     let jolteon="https://pokeapi.co/api/v2/pokemon/jolteon"
     let numero=0
+    let alunos=[]
     let estadoAnterior=null
     function informacao() {
         if(numero<1){
@@ -32,7 +33,7 @@
        else{
         numero--
        }
-        fetch("https://niloweb.com.br/transit-room/api/reg_endpoint.php")
+        fetch("https://niloweb.com.br/transit-room/api/reg_endpoint_all.php")
         .then(resposta => resposta.json())
         .then(dados1 => {
             if (dados1[0].res === "B") {
@@ -47,10 +48,14 @@
     }
 
     function buscarPokemon(url, status) {
+        fetch("https://niloweb.com.br/transit-room/api/reg_endpoint_all.php")
+        .then(resposta => resposta.json())
+        .then(dados1 => {
         fetch(url)
         .then(resposta => resposta.json())
         .then(dados => {
             momento.innerHTML = `No momento está ${status}`;
+            
             if(numero==1){
             pokemon.innerHTML = `
                 <img class="eevee" src="${dados.sprites.front_default}" alt="${dados.name}">
@@ -58,6 +63,10 @@
                 <p>Altura: ${dados.height}</p>
                 <p>Peso: ${dados.weight}</p>
                 <p>Tipo: ${dados.types[0].type.name}</p>
+                <p>Fila atual: ${dados1[0].nome}</p>
+                <p>Motivo: ${dados1[0].motivo}</p>
+                <p>Hora: ${dados1[0].hora}</p>
+                <p>Data: ${dados1[0].data}</p>
             `}
             else{
                 pokemon.innerHTML = `
@@ -65,11 +74,13 @@
             };
         })
         .catch(error => console.error('Erro ao buscar Pokémon:', error));
+    });
     }
 
-    fetch("https://niloweb.com.br/transit-room/api/reg_endpoint.php")
+    fetch("https://niloweb.com.br/transit-room/api/reg_endpoint_all.php")
     .then(resposta=>resposta.json()
     .then(dados1=>{
+       
         if(dados1[0].res=="B"){
             fetch(flareon)
         .then(resposta=>resposta.json())
@@ -116,7 +127,7 @@
     function checarapi() {
        
 
-    fetch("https://niloweb.com.br/transit-room/api/reg_endpoint.php")
+    fetch("https://niloweb.com.br/transit-room/api/reg_endpoint_all.php")
     .then(resposta => resposta.json())
     .then(dados1 => {
       
