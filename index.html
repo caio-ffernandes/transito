@@ -36,9 +36,10 @@
         fetch("https://niloweb.com.br/transit-room/api/reg_endpoint_all.php")
         .then(resposta => resposta.json())
         .then(dados1 => {
-            if (dados1[0].res === "B") {
+            let ultimoItem = dados1[dados1.length - 1];
+            if (ultimoItem.res === "B") {
                 buscarPokemon(flareon, "Bloqueado");
-            } else if (dados1[0].res === "L") {
+            } else if (ultimoItem.res === "L") {
                 buscarPokemon(leafeon, "Livre");
             } else {
                 buscarPokemon(jolteon, "Aguardando");
@@ -51,6 +52,7 @@
         fetch("https://niloweb.com.br/transit-room/api/reg_endpoint_all.php")
         .then(resposta => resposta.json())
         .then(dados1 => {
+            let ultimoItem = dados1[dados1.length - 1];
         fetch(url)
         .then(resposta => resposta.json())
         .then(dados => {
@@ -63,10 +65,10 @@
                 <p>Altura: ${dados.height}</p>
                 <p>Peso: ${dados.weight}</p>
                 <p>Tipo: ${dados.types[0].type.name}</p>
-                <p>Fila atual: ${dados1[0].nome}</p>
-                <p>Motivo: ${dados1[0].motivo}</p>
-                <p>Hora: ${dados1[0].hora}</p>
-                <p>Data: ${dados1[0].data}</p>
+                <p>Fila atual: ${ultimoItem.nome}</p>
+                <p>Motivo: ${ultimoItem.motivo}</p>
+                <p>Hora: ${ultimoItem.hora}</p>
+                <p>Data: ${ultimoItem.data}</p>
             `}
             else{
                 pokemon.innerHTML = `
@@ -80,8 +82,9 @@
     fetch("https://niloweb.com.br/transit-room/api/reg_endpoint_all.php")
     .then(resposta=>resposta.json()
     .then(dados1=>{
-       
-        if(dados1[0].res=="B"){
+        let ultimoItem = dados1[dados1.length - 1];
+       console.log(dados1)
+        if(ultimoItem.res=="B"){
             fetch(flareon)
         .then(resposta=>resposta.json())
         .then(dados=>{
@@ -94,7 +97,7 @@
             document.body.classList.add('background-flareon');
         })
         }
-       else if(dados1[0].res=="L"){
+       else if(ultimoItem.res=="L"){
         fetch(leafeon)
         .then(resposta=>resposta.json())
         .then(dados=>{
@@ -130,16 +133,16 @@
     fetch("https://niloweb.com.br/transit-room/api/reg_endpoint_all.php")
     .then(resposta => resposta.json())
     .then(dados1 => {
-      
-        if (dados1[0].res !== estadoAnterior) {
+        let ultimoItem = dados1[dados1.length - 1];
+        if (ultimoItem.res !== estadoAnterior) {
             
-            estadoAnterior = dados1[0].res;
+            estadoAnterior = ultimoItem.res;
             
 
             document.body.classList.remove('background-flareon', 'background-leafeon', 'background-jolteon');
             
           
-            if (dados1[0].res == "B") {
+            if (ultimoItem.res == "B") {
                 fetch(flareon)
                 .then(resposta => resposta.json())
                 .then(dados => {
@@ -179,7 +182,7 @@ function shootConfetti() {
 }
                     shootConfetti();
                 })
-            } else if (dados1[0].res == "L") {
+            } else if (ultimoItem.res == "L") {
                 fetch(leafeon)
                 .then(resposta => resposta.json())
                 .then(dados => {
