@@ -23,10 +23,10 @@
 </table>
 
 <script>
-    function carregarFila() {
-        fetch('https://niloweb.com.br/transit-room/api/reg_endpoint_all.php')
+     fetch('https://niloweb.com.br/transit-room/api/reg_endpoint_all.php')
             .then(response => response.json())
             .then(data => {
+                
                 let ultimoItem = data[data.length - 1];
                 const filaTable = document.getElementById('fila');
                 filaTable.getElementsByTagName('tbody')[0].innerHTML = '';
@@ -48,6 +48,41 @@
             .catch(error => {
                 console.error('Erro ao carregar a fila:', error);
             });
+
+    function carregarFila() {
+        fetch('https://niloweb.com.br/transit-room/api/reg_endpoint_all.php')
+            .then(response => response.json())
+            .then(data => {
+                
+                let ultimoItem = dados1[dados1.length - 1];
+        if (ultimoItem.res !== estadoAnterior) {
+            
+            estadoAnterior = ultimoItem.res;
+            
+
+            document.body.classList.remove('background-flareon', 'background-leafeon', 'background-jolteon');
+            
+                const filaTable = document.getElementById('fila');
+                filaTable.getElementsByTagName('tbody')[0].innerHTML = '';
+                data.forEach(item => {
+                    const row = filaTable.insertRow(-1);
+                    const cell1 = row.insertCell(0);
+                    const cell2 = row.insertCell(1);
+                    const cell3 = row.insertCell(2);
+                    const cell4 = row.insertCell(3);
+                    const cell5 = row.insertCell(4);
+                    cell1.innerHTML = item.nome;
+                    cell2.innerHTML = item.hora;
+                    cell3.innerHTML = item.data;
+                    cell4.innerHTML = item.motivo;
+                    cell5.innerHTML = item.res;
+                    document.body.classList.add(getStatusClass(ultimoItem.res));
+                });
+                playSound();
+            }})
+            .catch(error => {
+                console.error('Erro ao carregar a fila:', error);
+            });
     }
 
     function getStatusClass(estado) {
@@ -62,8 +97,19 @@
                 return '';
         }
     }
-
-    window.onload = carregarFila;
+    function playSound() {
+    const audio = new Audio ('audio/12_3.mp3')
+                audio.onended = function() {
+            };
+            audio.play();
+        }
+ 
+        document.body.addEventListener('onLoad', function() {
+            playSound();
+        });
+    carregarFila
+    setInterval(carregarFila, 1000);
+    
 </script>
 
 </body>
