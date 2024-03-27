@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fila da API Niloweb</title>
+    <link rel="stylesheet" href="css/fila.css">
+</head>
+<body>
+<table id="fila">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Hora</th>
+            <th>Data</th>
+            <th>Motivo</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+      
+    </tbody>
+</table>
+
+<script>
+    function carregarFila() {
+        fetch('https://niloweb.com.br/transit-room/api/reg_endpoint_all.php')
+            .then(response => response.json())
+            .then(data => {
+                let ultimoItem = data[data.length - 1];
+                const filaTable = document.getElementById('fila');
+                filaTable.getElementsByTagName('tbody')[0].innerHTML = '';
+                data.forEach(item => {
+                    const row = filaTable.insertRow(-1);
+                    const cell1 = row.insertCell(0);
+                    const cell2 = row.insertCell(1);
+                    const cell3 = row.insertCell(2);
+                    const cell4 = row.insertCell(3);
+                    const cell5 = row.insertCell(4);
+                    cell1.innerHTML = item.nome;
+                    cell2.innerHTML = item.hora;
+                    cell3.innerHTML = item.data;
+                    cell4.innerHTML = item.motivo;
+                    cell5.innerHTML = item.res;
+                    document.body.classList.add(getStatusClass(ultimoItem.res));
+                });
+            })
+            .catch(error => {
+                console.error('Erro ao carregar a fila:', error);
+            });
+    }
+
+    function getStatusClass(estado) {
+        switch (estado) {
+            case 'B':
+                return 'status-bloqueado';
+            case 'A':
+                return 'status-aguardando';
+            case 'L':
+                return 'status-livre';
+            default:
+                return '';
+        }
+    }
+
+    window.onload = carregarFila;
+</script>
+
+</body>
+</html>

@@ -1,0 +1,41 @@
+body {
+    font-family: Arial, sans-serif;
+    height: 100vh;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+    background-color: #f2f2f26a;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+.status-bloqueado {
+    background-image: url(../images/fire_pokemon_energy_wallpaper_by_elbarnzo_d7519pz-fullview.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.status-aguardando {
+    background-image: url(../images/electric_pokemon_energy_wallpaper_by_elbarnzo_d74n7g8-fullview.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.status-livre {
+    background-image: url(../images/grass_pokemon_energy_wallpaper_by_elbarnzo_d755hbj-fullview.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
