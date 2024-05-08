@@ -18,35 +18,70 @@
     <img class="pokedexe" onclick="informacao()" src="images/closed-pokedex.svg" alt="">
 </body>
 <script>
-    let momento=document.getElementById("momento")
-    let pokemon=document.getElementById("infopok")
-    let flareon="https://pokeapi.co/api/v2/pokemon/flareon"
-    let leafeon="https://pokeapi.co/api/v2/pokemon/leafeon"
-    let jolteon="https://pokeapi.co/api/v2/pokemon/jolteon"
-    let numero=0
-    let alunos=[]
-    let estadoAnterior=null
-    function informacao() {
-        if(numero<1){
-           numero++  
-        }
-       else{
+ let momento = document.getElementById("momento");
+let pokemon = document.getElementById("infopok");
+let flareon = "https://pokeapi.co/api/v2/pokemon/flareon";
+let leafeon = "https://pokeapi.co/api/v2/pokemon/leafeon";
+let jolteon = "https://pokeapi.co/api/v2/pokemon/jolteon";
+let numero = 0;
+let alunos = [];
+let estadoAnterior = null;
+let nomecerto = ''; // Definindo nomecerto aqui
+
+function informacao() {
+    if (numero < 1) {
+        numero++
+    } else {
         numero--
-       }
-        fetch("https://niloweb.com.br/transit-room/api/reg_endpoint_all.php")
+    }
+    fetch("https://niloweb.com.br/transit-room/api/reg_endpoint_all.php")
         .then(resposta => resposta.json())
         .then(dados1 => {
             let ultimoItem = dados1[dados1.length - 1];
-            if (ultimoItem.res === "B") {
-                buscarPokemon(flareon, "Bloqueado");
-            } else if (ultimoItem.res === "L") {
-                buscarPokemon(leafeon, "Livre");
-            } else {
-                buscarPokemon(jolteon, "Aguardando");
-            }
-           
-        });
+            fetch("http://localhost:3000/pokedex")
+                .then(resposta => resposta.json())
+                .then(dados2 => {
+                    console.log(dados2)
+                    
+                    let alunoEncontrado = false;
+                    for (let num = 0; num < dados2.length; num++) {
+    let nomeCompleto = dados2[num].nomepe;
+    let partesNome = nomeCompleto.split(' ');
+
+    let primeiroNome = partesNome[0].toUpperCase().trim(); // Remova os espaços extras antes de transformar em maiúsculo
+    let segundoNome = '';
+    let sobrenome = '';
+
+    if (partesNome.length > 1) {
+        segundoNome = partesNome[1].charAt(0).toUpperCase().trim(); // Remova os espaços extras antes de transformar em maiúsculo
     }
+
+    let nomeFormatado = primeiroNome + (segundoNome ? ' ' + segundoNome : '') + (sobrenome ? ' ' + sobrenome : ''); // Não é necessário adicionar espaço extra se não houver segundo nome
+    console.log(nomeFormatado);
+    console.log(ultimoItem.nome + ' ' + ultimoItem.sobrenome);
+    nomecerto = ultimoItem.nome.trim() + ' ' + ultimoItem.sobrenome.trim(); // Remova os espaços extras antes de comparar
+    if (nomeFormatado == nomecerto) {
+        console.log(dados2[num].nomepk);
+        let appai = 'https://pokeapi.co/api/v2/pokemon/' + dados2[num].nomepk;
+        alunoEncontrado = true;
+        // Restante do seu código...
+
+                            if (ultimoItem.res === "B") {
+                                buscarPokemon(appai, "Bloqueado");
+                            } else if (ultimoItem.res === "L") {
+                                buscarPokemon(appai, "Livre");
+                            } else {
+                                buscarPokemon(appai, "Aguardando");
+                            }
+                        }
+                    }
+                });
+        });
+}
+
+// Restante do seu código...
+
+
 
     function buscarPokemon(url, status) {
         fetch("https://niloweb.com.br/transit-room/api/reg_endpoint_all.php")
@@ -84,8 +119,36 @@
     .then(dados1=>{
         let ultimoItem = dados1[dados1.length - 1];
        console.log(dados1)
+
+       fetch("http://localhost:3000/pokedex")
+    .then(resposta => resposta.json())
+    .then(dados2 => {
+console.log(dados2)
+
+for (let num = 0; num < dados2.length; num++) {
+    let nomeCompleto = dados2[num].nomepe;
+    let partesNome = nomeCompleto.split(' ');
+
+    let primeiroNome = partesNome[0].toUpperCase().trim(); 
+    let segundoNome = '';
+    let sobrenome = '';
+
+    if (partesNome.length > 1) {
+        segundoNome = partesNome[1].charAt(0).toUpperCase().trim(); 
+    }
+
+    let nomeFormatado = primeiroNome + (segundoNome ? ' ' + segundoNome : '') + (sobrenome ? ' ' + sobrenome : '');
+    console.log(nomeFormatado);
+    console.log(ultimoItem.nome + ' ' + ultimoItem.sobrenome);
+    nomecerto = ultimoItem.nome.trim() + ' ' + ultimoItem.sobrenome.trim();
+    if (nomeFormatado == nomecerto) {
+        console.log(dados2[num].nomepk);
+        let appai = 'https://pokeapi.co/api/v2/pokemon/' + dados2[num].nomepk;
+        alunoEncontrado = true;
+       
+
         if(ultimoItem.res=="B"){
-            fetch(flareon)
+            fetch(appai)
         .then(resposta=>resposta.json())
         .then(dados=>{
             console.log(dados)
@@ -110,7 +173,7 @@
         })
        }
        else{
-        fetch(jolteon)
+        fetch(appai)
         .then(resposta=>resposta.json())
         .then(dados=>{
             console.log(dados)
@@ -121,6 +184,16 @@
             document.body.classList.add('background-jolteon');  
         })
        }
+    
+    }
+    
+    }
+    
+    
+    })
+       
+       
+       
        
     })
 
@@ -130,20 +203,83 @@
     function checarapi() {
        
 
-    fetch("https://niloweb.com.br/transit-room/api/reg_endpoint_all.php")
+        fetch("https://niloweb.com.br/transit-room/api/reg_endpoint_all.php")
     .then(resposta => resposta.json())
     .then(dados1 => {
         let ultimoItem = dados1[dados1.length - 1];
         if (ultimoItem.res !== estadoAnterior) {
-            
             estadoAnterior = ultimoItem.res;
-            
-
             document.body.classList.remove('background-flareon', 'background-leafeon', 'background-jolteon');
-            
-          
-            if (ultimoItem.res == "B") {
-                fetch(flareon)
+            if (dados1[0].nome === 'Liberado para pedidos...') {
+            fetch(leafeon)
+            .then(resposta => resposta.json())
+            .then(dados => {
+                momento.innerHTML = `No momento está livre`;
+                pokemon.innerHTML = `<img class="eevee" src="${dados.sprites.front_default}" alt="${dados.name}">`;
+                document.body.classList.add('background-leafeon');
+                playSound();
+                
+                function shootConfetti() {
+                    const defaults = {
+                        spread: 360,
+                        ticks: 100,
+                        gravity: 0,
+                        decay: 0.94,
+                        startVelocity: 30,
+                    };
+                    
+                    function shoot() {
+                        confetti({
+                            ...defaults,
+                            particleCount: 20,
+                            scalar: 2,
+                            shapes: ["emoji"],
+                            shapeOptions: {
+                                emoji: {
+                                    value: [" 🍃 "],
+                                },
+                            },
+                        });
+                    }
+                    
+                    setTimeout(shoot, 0);
+                    setTimeout(shoot, 100);
+                    setTimeout(shoot, 200);
+                }
+                shootConfetti();
+            })
+            .catch(error => console.error('Erro ao buscar Pokémon:', error));
+        } else {
+            fetch("http://localhost:3000/pokedex")
+                .then(resposta => resposta.json())
+                .then(dados2 => {
+                    console.log(dados2);
+                
+                    let alunoEncontrado = false;
+                    for (let num = 0; num < dados2.length; num++) {
+    let nomeCompleto = dados2[num].nomepe;
+    let partesNome = nomeCompleto.split(' ');
+
+    let primeiroNome = partesNome[0].toUpperCase().trim(); 
+    let segundoNome = '';
+    let sobrenome = '';
+
+    if (partesNome.length > 1) {
+        segundoNome = partesNome[1].charAt(0).toUpperCase().trim();
+    }
+
+    let nomeFormatado = primeiroNome + (segundoNome ? ' ' + segundoNome : '') + (sobrenome ? ' ' + sobrenome : '');
+    console.log(nomeFormatado);
+    console.log(ultimoItem.nome + ' ' + ultimoItem.sobrenome);
+    nomecerto = ultimoItem.nome.trim() + ' ' + ultimoItem.sobrenome.trim();
+    if (nomeFormatado == nomecerto) {
+        console.log(dados2[num].nomepk);
+        let appai = 'https://pokeapi.co/api/v2/pokemon/' + dados2[num].nomepk;
+        alunoEncontrado = true;
+      
+
+        if (ultimoItem.res == "B") {
+                fetch(appai)
                 .then(resposta => resposta.json())
                 .then(dados => {
                     momento.innerHTML = `No momento está bloqueado`;
@@ -182,7 +318,7 @@ function shootConfetti() {
 }
                     shootConfetti();
                 })
-            } else if (ultimoItem.res == "L") {
+            } else if (dados1[0].nome === "Liberado para pedidos...") {
                 fetch(leafeon)
                 .then(resposta => resposta.json())
                 .then(dados => {
@@ -223,7 +359,7 @@ function shootConfetti() {
                     shootConfetti();
                 })
             } else {
-                fetch(jolteon)
+                fetch(appai)
                 .then(resposta => resposta.json())
                 .then(dados => {
                     momento.innerHTML = `No momento está aguardando`;
@@ -263,7 +399,51 @@ function shootConfetti() {
                     shootConfetti();
                 })
             }
+
+
+            break;
+                        }
+                    }
+                    if (!alunoEncontrado && ultimoItem.res == "L") {
+                        document.body.classList.add('background-leafeon');
+                        momento.innerHTML = `No momento está livre`;
+                       
+                        buscarPokemon(leafeon, "Livre");
+                        function shootConfetti() {
+            const defaults = {
+                spread: 360,
+                ticks: 100,
+                gravity: 0,
+                decay: 0.94,
+                startVelocity: 30,
+            };
+
+            function shoot() {
+               
+
+                confetti({
+                    ...defaults,
+                    particleCount: 20,
+                    scalar: 2,
+                    shapes: ["emoji"],
+                    shapeOptions: {
+                        emoji: {
+                            value: [" 🍃 "],
+                        },
+                    },
+                });
+            }
+        
+            setTimeout(shoot, 0);
+            setTimeout(shoot, 100);
+            setTimeout(shoot, 200);
+}
+                    shootConfetti();
+                    }
+                })
+                
         }
+    }
     })
     .catch(error => console.error('Erro ao verificar API:', error));
 }
